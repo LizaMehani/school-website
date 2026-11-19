@@ -1,99 +1,179 @@
-import React from 'react';
+import { useState } from "react";
 
-export default function Navbar({ currentView, setCurrentView }) {
+export default function Navbar({ onNavigate, currentPage = "home" }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const goToPage = (page) => {
+    setMenuOpen(false);
+    if (typeof onNavigate === "function") {
+      onNavigate(page);
+    } else {
+      window.location.hash = `#${page}`;
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const goToSection = (sectionId) => {
+    setMenuOpen(false);
+    if (currentPage !== "home" && typeof onNavigate === "function") {
+      onNavigate("home");
+      setTimeout(() => {
+        const el = document.getElementById(sectionId);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 120);
+    } else {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      } else {
+        window.location.hash = `#${sectionId}`;
+      }
+    }
+  };
+
   return (
-    <nav className="sticky top-0 z-50 bg-emerald-950 text-white shadow-md border-b border-emerald-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          
-          {/* School Brand Logo Picture & Name */}
-          <div 
-            className="flex items-center space-x-3 cursor-pointer group"
-            onClick={() => setCurrentView('home')}
+    <header className="sticky top-0 z-50 bg-[#064e3b]/95 backdrop-blur-md text-white border-b border-emerald-800/70 shadow-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+        {/* Logo + School Name */}
+        <button
+          type="button"
+          onClick={() => goToPage("home")}
+          className="flex items-center gap-2.5 text-left min-w-0 group"
+        >
+          <img
+            src="/logo.jpg"
+            alt="GGHS Mithi West Logo"
+            className="w-9 h-9 rounded-full object-cover shrink-0 border border-[#fbbf24]/60 transition-transform duration-300 group-hover:scale-105"
+          />
+          <div className="truncate">
+            <div className="font-bold text-sm sm:text-base leading-tight truncate">
+              GGHS Mithi West
+            </div>
+            <div className="text-[10px] sm:text-xs tracking-wider text-[#fbbf24] uppercase truncate">
+              Tharparkar Sindh
+            </div>
+          </div>
+        </button>
+
+        {/* Desktop Nav */}
+        <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+          <button
+            type="button"
+            onClick={() => goToPage("home")}
+            className={`transition-colors duration-200 hover:text-[#fbbf24] ${
+              currentPage === "home" ? "text-[#fbbf24]" : "text-white"
+            }`}
           >
-            <div className="w-12 h-12 rounded-full overflow-hidden bg-white border-2 border-amber-400 shadow-md group-hover:scale-105 transition flex items-center justify-center shrink-0">
-              <img 
-                src="/logo.jpg" 
-                alt="GGHS Mithi West Logo" 
-                className="w-full h-full object-contain p-0.5"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.parentNode.innerHTML = '<span class="font-extrabold text-emerald-950 text-xs">GG</span>';
-                }}
-              />
-            </div>
-            <div>
-              <span className="font-extrabold text-white text-base sm:text-lg tracking-tight block leading-tight">
-                GGHS Mithi West
-              </span>
-              <span className="text-[10px] text-amber-300 font-semibold uppercase tracking-wider">
-                Tharparkar Sindh
-              </span>
-            </div>
-          </div>
+            Home
+          </button>
 
-          {/* Navigation Links */}
-          <div className="flex items-center space-x-3 sm:space-x-5 text-sm font-semibold">
-            <button 
-              onClick={() => setCurrentView('home')}
-              className={`transition cursor-pointer ${currentView === 'home' ? 'text-amber-400 font-bold' : 'text-emerald-100 hover:text-white'}`}
-            >
-              Home
-            </button>
-            <a 
-              href="#announcements" 
-              onClick={() => setCurrentView('home')}
-              className="text-emerald-100 hover:text-white transition hidden sm:inline-block"
-            >
-              Announcements
-            </a>
-            <a 
-              href="#about" 
-              onClick={() => setCurrentView('home')}
-              className="text-emerald-100 hover:text-white transition hidden md:inline-block"
-            >
-              About
-            </a>
-            <a 
-              href="#facilities" 
-              onClick={() => setCurrentView('home')}
-              className="text-emerald-100 hover:text-white transition hidden lg:inline-block"
-            >
-              Facilities
-            </a>
+          <button
+            type="button"
+            onClick={() => goToSection("about")}
+            className="text-white hover:text-[#fbbf24] transition-colors duration-200"
+          >
+            About
+          </button>
 
-            {/* Naya Gallery Button */}
-            <button 
-              onClick={() => {
-                setCurrentView('gallery');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className={`px-3.5 py-2 rounded-xl transition font-semibold cursor-pointer ${
-                currentView === 'gallery' 
-                  ? 'bg-amber-400 text-slate-950 shadow-md' 
-                  : 'text-emerald-100 hover:text-amber-300 hover:bg-emerald-900/70'
-              }`}
-            >
-              Gallery
-            </button>
+          <button
+            type="button"
+            onClick={() => goToSection("announcements")}
+            className="text-white hover:text-[#fbbf24] transition-colors duration-200"
+          >
+            Announcements
+          </button>
 
-            <button 
-              onClick={() => {
-                setCurrentView('history');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className={`px-4 py-2 rounded-xl transition font-semibold shadow-md cursor-pointer ${
-                currentView === 'history' 
-                  ? 'bg-amber-400 text-slate-950' 
-                  : 'bg-emerald-900 text-amber-300 border border-amber-400/40 hover:bg-emerald-800'
-              }`}
-            >
-              History & Tribute
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => goToPage("gallery")}
+            className={`transition-colors duration-200 hover:text-[#fbbf24] ${
+              currentPage === "gallery" ? "text-[#fbbf24]" : "text-white"
+            }`}
+          >
+            Gallery
+          </button>
 
+          <button
+            type="button"
+            onClick={() => goToPage("history")}
+            className={`px-3.5 py-1.5 rounded-lg border border-[#fbbf24]/70 font-semibold transition-all duration-200 whitespace-nowrap ${
+              currentPage === "history"
+                ? "bg-[#fbbf24] text-[#064e3b]"
+                : "text-[#fbbf24] hover:bg-[#fbbf24] hover:text-[#064e3b]"
+            }`}
+          >
+            History &amp; Tribute
+          </button>
+        </nav>
+
+        {/* Mobile Animated Menu Button */}
+        <button
+          type="button"
+          onClick={() => setMenuOpen((prev) => !prev)}
+          aria-label="Toggle Menu"
+          aria-expanded={menuOpen}
+          className="md:hidden p-2 rounded-lg text-[#fbbf24] hover:bg-emerald-900/70 active:scale-95 transition-all duration-200 shrink-0"
+        >
+          <span
+            className={`inline-block text-xl font-bold leading-none transition-transform duration-300 ${
+              menuOpen ? "rotate-90 scale-110" : "rotate-0"
+            }`}
+          >
+            {menuOpen ? "✕" : "☰"}
+          </span>
+        </button>
+      </div>
+
+      {/* Smooth Animated Mobile Dropdown */}
+      <div
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out bg-[#053f30] border-t border-emerald-800/80 ${
+          menuOpen
+            ? "max-h-96 opacity-100 translate-y-0"
+            : "max-h-0 opacity-0 -translate-y-2 pointer-events-none border-t-0"
+        }`}
+      >
+        <div className="px-4 py-3 space-y-1.5 text-sm">
+          <button
+            type="button"
+            onClick={() => goToPage("home")}
+            className="block w-full text-left py-2 px-3 rounded-lg hover:bg-emerald-900/70 hover:translate-x-1 transition-all duration-200 text-white"
+          >
+            Home
+          </button>
+
+          <button
+            type="button"
+            onClick={() => goToSection("about")}
+            className="block w-full text-left py-2 px-3 rounded-lg hover:bg-emerald-900/70 hover:translate-x-1 transition-all duration-200 text-white"
+          >
+            About
+          </button>
+
+          <button
+            type="button"
+            onClick={() => goToSection("announcements")}
+            className="block w-full text-left py-2 px-3 rounded-lg hover:bg-emerald-900/70 hover:translate-x-1 transition-all duration-200 text-white"
+          >
+            Announcements
+          </button>
+
+          <button
+            type="button"
+            onClick={() => goToPage("gallery")}
+            className="block w-full text-left py-2 px-3 rounded-lg hover:bg-emerald-900/70 hover:translate-x-1 transition-all duration-200 text-white"
+          >
+            Gallery
+          </button>
+
+          <button
+            type="button"
+            onClick={() => goToPage("history")}
+            className="block w-full text-left py-2.5 px-3 rounded-lg bg-[#fbbf24] text-[#064e3b] font-semibold hover:brightness-105 active:scale-[0.99] transition-all duration-200 mt-1"
+          >
+            History &amp; Tribute
+          </button>
         </div>
       </div>
-    </nav>
+    </header>
   );
 }
