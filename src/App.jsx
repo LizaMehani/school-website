@@ -7,7 +7,6 @@ import About from './components/About';
 import Academics from './components/Academics';
 import Exams from './components/Exams';
 import Awards from './components/Awards';
-import EventsAndCelebrations from './components/EventsAndCelebrations';
 import History from './components/History';
 import Facilities from './components/Facilities';
 import Faculty from './components/Faculty';
@@ -33,7 +32,6 @@ export default function App() {
           <Academics />
           <Exams />
           <Awards />
-          {/* EventsAndCelebrations ko yahan se hata diya hai taaki home page clean rahe */}
           <Facilities />
           <Faculty />
           <WesternFamily />
@@ -41,12 +39,12 @@ export default function App() {
         </>
       )}
 
-      {/* 2. Gallery View (Jab koi Navbar se Gallery click kare) */}
+      {/* 2. Gallery View */}
       {currentView === 'gallery' && (
         <GalleryPage setCurrentView={setCurrentView} />
       )}
 
-      {/* 3. History View (Jab koi History & Tribute click kare) */}
+      {/* 3. History View */}
       {currentView === 'history' && (
         <div className="pt-10">
           <History />
